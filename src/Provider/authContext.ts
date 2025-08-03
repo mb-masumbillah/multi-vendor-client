@@ -1,0 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { User } from "firebase/auth";
+import { createContext } from "react";
+
+export type TAuthContext = {
+  user: User | null;
+  loading: boolean;
+  createUser: (email: string, password: string) => Promise<any>;
+  loginUser: (email: string, password: string) => Promise<any>;
+  logout: () => Promise<void>;
+};
+
+export const AuthContext = createContext<TAuthContext | undefined>(undefined);
