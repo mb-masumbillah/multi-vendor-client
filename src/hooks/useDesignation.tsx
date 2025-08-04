@@ -7,7 +7,7 @@ const useDesignation = () => {
   const { data: user = [] } = useQuery({
     queryKey: ["user"],
     queryFn: async () => {
-      const res = await axiosSecure.get("/user");
+      const res = await axiosSecure.get("/user/me");
       return res.data;
     },
   });

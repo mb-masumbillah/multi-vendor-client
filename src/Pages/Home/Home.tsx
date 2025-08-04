@@ -1,14 +1,10 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
-import useDesignation from "../../hooks/useDesignation";
 
 const Home = () => {
   const { logout } = useAuth();
-  const [user] = useDesignation();
+
   const navigate = useNavigate();
-
-
-    console.log({user})
 
   const handleLogout = () => {
     logout();
@@ -16,8 +12,10 @@ const Home = () => {
   };
 
   return (
-    <div>
+    <div className="">
       <button onClick={handleLogout}>Logout</button>
+      <br />
+      <Link to="/dashboard">Dashboard</Link>
     </div>
   );
 };

@@ -43,7 +43,9 @@ const ContinueWithEmail = () => {
               duration: 2000,
             });
             setLoading(false);
-            navigate("/");
+        setTimeout(() => {
+              navigate("/");
+            }, 200);
           })
           .catch((_error) => {
             toast.error("Register Failed ! 😞", {

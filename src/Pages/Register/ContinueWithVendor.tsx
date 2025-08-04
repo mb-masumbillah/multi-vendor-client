@@ -53,7 +53,9 @@ const ContinueWithVendor = () => {
               duration: 2000,
             });
             setLoading(false);
-            navigate("/");
+            setTimeout(() => {
+              navigate("/");
+            }, 200);
           }
         });
       })

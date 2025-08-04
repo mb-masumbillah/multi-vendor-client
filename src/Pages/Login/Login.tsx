@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import authImg from "../../assets/auth.svg";
 import Form from "../../component/form/Form";
 import Input from "../../component/form/Input";
@@ -8,22 +8,24 @@ import type { FieldValues } from "react-hook-form";
 
 const Login = () => {
   const { loginUser } = useAuth();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const from = location?.state?.from?.pathname || "/";
 
   const handleSubmit = (data: FieldValues) => {
     loginUser(data.email, data.password)
       .then((result) => {
-        // TODO:
-        console.log(result);
-
-        navigate("/")
+        if (result) {
+          setTimeout(() => {
+            navigate(from, { replace: true });
+          }, 200);
+        }
       })
       .catch((error) => {
         // TODO:
         console.log(error);
       });
-
-    console.log(data);
   };
 
   return (
