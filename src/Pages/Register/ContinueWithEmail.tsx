@@ -37,13 +37,13 @@ const ContinueWithEmail = () => {
     await axiosPublic.post("/user/create-user", userData).then((res) => {
       if (res.data) {
         createUser(data.email, data.password)
-          .then(async () => {
+          .then( () => {
             toast.success("Register success 😊", {
               id: toasterId,
               duration: 2000,
             });
             setLoading(false);
-        setTimeout(() => {
+            setTimeout(() => {
               navigate("/");
             }, 200);
           })

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import authImg from "../../assets/auth.svg";
 import Form from "../../component/form/Form";
@@ -5,26 +6,36 @@ import Input from "../../component/form/Input";
 
 import useAuth from "../../hooks/useAuth";
 import type { FieldValues } from "react-hook-form";
+import { toast } from "sonner";
+import { useState } from "react";
+import Spinner from "../../component/ui/Spinner";
 
 const Login = () => {
   const { loginUser } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [loading, setLoading] = useState(false);
 
   const from = location?.state?.from?.pathname || "/";
 
   const handleSubmit = (data: FieldValues) => {
+    const toasterId = toast.success("logging in");
+
+    setLoading(true);
+
     loginUser(data.email, data.password)
       .then((result) => {
         if (result) {
+          toast.success("login success", { id: toasterId, duration: 2000 });
+          setLoading(false);
           setTimeout(() => {
             navigate(from, { replace: true });
           }, 200);
         }
       })
-      .catch((error) => {
-        // TODO:
-        console.log(error);
+      .catch((_error) => {
+        toast.error("login faild", { id: toasterId, duration: 2000 });
+        setLoading(false);
       });
   };
 
@@ -68,7 +79,13 @@ const Login = () => {
               type="submit"
               className="w-full bg-[#6200ED] text-white py-2 rounded hover:bg-[#6200ED] transition"
             >
-              Login
+              {loading ? (
+                <div className="flex justify-center items-center gap-3">
+                  <Spinner />
+                </div>
+              ) : (
+                <p>Login</p>
+              )}
             </button>
           </Form>
           <div>
