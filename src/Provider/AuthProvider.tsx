@@ -16,18 +16,22 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const axiosPublic = useAxiosPublic();
 
   const createUser = (email: string, password: string) => {
-    setLoading(false);
-    return createUserWithEmailAndPassword(auth, email, password);
+    setLoading(true); // ✅ Start loading
+    return createUserWithEmailAndPassword(auth, email, password).finally(() =>
+      setLoading(false)
+    ); // ✅ Stop loading after operation
   };
 
   const loginUser = (email: string, password: string) => {
-    setLoading(false);
-    return signInWithEmailAndPassword(auth, email, password);
+    setLoading(true); // ✅ Start loading
+    return signInWithEmailAndPassword(auth, email, password).finally(() =>
+      setLoading(false)
+    ); // ✅ Stop loading
   };
 
   const logout = () => {
-    setLoading(false);
-    return signOut(auth);
+    setLoading(true); // ✅ Start loading
+    return signOut(auth).finally(() => setLoading(false)); // ✅ Stop loading
   };
 
   useEffect(() => {
@@ -36,33 +40,29 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (currentUser) {
         const userInfo = { email: currentUser?.email };
 
-        await axiosPublic
-          .post("/jwt", userInfo)
-          .then((res) => {
-            console.log(res?.data?.data?.accessToken);
-            if (res?.data?.data?.accessToken) {
-              localStorage.setItem("accessToken", res?.data?.data?.accessToken);
-              setLoading(false);
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        try {
+          const res = await axiosPublic.post("/jwt", userInfo);
+          const accessToken = res?.data?.data?.accessToken;
+          if (accessToken) {
+            localStorage.setItem("accessToken", accessToken);
+          }
+        } catch (error) {
+          console.log("JWT Error:", error);
+        } finally {
+          setLoading(false); // ✅ Done checking auth state
+        }
       } else {
         localStorage.removeItem("accessToken");
-        setLoading(false);
+        setLoading(false); // ✅ No user
       }
     });
 
-    return () => {
-      return unSubscribe();
-    };
+    return () => unSubscribe();
   }, [axiosPublic]);
 
   const authInfo: TAuthContext = {
     user,
     loading,
-
     createUser,
     loginUser,
     logout,

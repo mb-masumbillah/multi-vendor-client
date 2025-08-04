@@ -5,12 +5,18 @@ import Register from "../Pages/Register/Register";
 import ContinueWithEmail from "../Pages/Register/ContinueWithEmail";
 import RegisterOption from "../Pages/Register/RegisterOption";
 import ContinueWithVendor from "../Pages/Register/ContinueWithVendor";
+import Home from "../Pages/Home/Home";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    children: [],
+     children: [
+      {
+        index: true,
+        element: <Home />,
+      },
+    ],
   },
   {
     path: "/login",

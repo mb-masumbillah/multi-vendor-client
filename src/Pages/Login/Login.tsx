@@ -1,18 +1,22 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import authImg from "../../assets/auth.svg";
 import Form from "../../component/form/Form";
 import Input from "../../component/form/Input";
-import type { TFormData } from "../Register/ContinueWithEmail";
+
 import useAuth from "../../hooks/useAuth";
+import type { FieldValues } from "react-hook-form";
 
 const Login = () => {
   const { loginUser } = useAuth();
+  const navigate = useNavigate()
 
-  const handleSubmit = (data: TFormData) => {
+  const handleSubmit = (data: FieldValues) => {
     loginUser(data.email, data.password)
       .then((result) => {
         // TODO:
         console.log(result);
+
+        navigate("/")
       })
       .catch((error) => {
         // TODO:
@@ -50,7 +54,7 @@ const Login = () => {
           </button>
 
           {/* Form Starts */}
-          <Form<TFormData>
+          <Form
             onSubmit={handleSubmit}
             defaultValues={{ email: "", password: "" }}
           >

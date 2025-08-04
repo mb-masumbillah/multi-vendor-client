@@ -6,33 +6,33 @@ const axiosSecure = axios.create({
   baseURL: "http://localhost:5000/api/v1",
 });
 const useAxiosSecure = () => {
-  const { logout } = useAuth();
+  const {logout} = useAuth();
   const navigate = useNavigate();
 
-  axios.interceptors.request.use(
+  axiosSecure.interceptors.request.use(
     function (config) {
       const token = localStorage.getItem("accessToken");
-
-      config.headers.authorization = token;
-
+      if (token) {
+        config.headers.Authorization = `${token}`;
+      }
       return config;
     },
     function (error) {
-      // Do something with request error
       return Promise.reject(error);
     }
   );
 
-  axios.interceptors.response.use(
+  axiosSecure.interceptors.response.use(
     function onFulfilled(response) {
       return response;
     },
     async (error) => {
-      const status = error.response.status;
+      const status = error.response?.status;
       if (status === 401 || status === 403) {
         await logout();
         navigate("/login");
       }
+      return Promise.reject(error);
     }
   );
 
