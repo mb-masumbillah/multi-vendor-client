@@ -11,7 +11,7 @@ import { useState } from "react";
 import Spinner from "../../component/ui/Spinner";
 
 const Login = () => {
-  const { loginUser } = useAuth();
+  const { loginUser, google } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [loading, setLoading] = useState(false);
@@ -39,6 +39,26 @@ const Login = () => {
       });
   };
 
+  const handleGoogle = () => {
+    const toasterId = toast.loading("google loading...");
+    setLoading(true);
+    google()
+      .then((result) => {
+        if (result) {
+          console.log(result);
+          toast.success("success", { id: toasterId, duration: 2000 });
+          setLoading(false);
+          // setTimeout(() => {
+          //   navigate("/");
+          // }, 2000);
+        }
+      })
+      .catch(() => {
+        toast.error("failed !", { id: toasterId, duration: 2000 });
+        setLoading(false);
+      });
+  };
+
   return (
     <div className=" flex items-center justify-center flex-row-reverse">
       <div className="w-full h-full flex justify-center items-center">
@@ -54,16 +74,23 @@ const Login = () => {
           </p>
 
           {/* Google Button */}
-          <button
+          <button disabled
+            onClick={handleGoogle}
             type="button"
             className="flex items-center justify-center w-full bg-white border border-gray-300 text-gray-700 font-medium py-2 rounded-md hover:bg-gray-50 transition mb-6"
           >
-            <img
-              src="https://www.svgrepo.com/show/475656/google-color.svg"
-              alt="Google"
-              className="w-5 h-5 mr-2"
-            />
-            Continue with Google
+            {loading ? (
+              <Spinner />
+            ) : (
+              <>
+                <img
+                  src="https://www.svgrepo.com/show/475656/google-color.svg"
+                  alt="Google"
+                  className="w-5 h-5 mr-2"
+                />
+                Continue with Google
+              </>
+            )}
           </button>
 
           {/* Form Starts */}

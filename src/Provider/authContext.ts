@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { User } from "firebase/auth";
+import type { User, UserCredential } from "firebase/auth";
 import { createContext } from "react";
 
 export type TAuthContext = {
@@ -7,6 +7,7 @@ export type TAuthContext = {
   loading: boolean;
   createUser: (email: string, password: string) => Promise<any>;
   loginUser: (email: string, password: string) => Promise<any>;
+  google: () => Promise<UserCredential>;
   logout: () => Promise<void>;
 };
 

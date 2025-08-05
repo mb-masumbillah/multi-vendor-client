@@ -1,21 +1,52 @@
 import { FaFileContract } from "react-icons/fa";
 import { MdOutlineEmail } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import useAuth from "../../hooks/useAuth";
+import { useState } from "react";
+import Spinner from "../../component/ui/Spinner";
+// import useAxiosPublic from "../../hooks/useAxiosPublic";
 
 const btnStyle =
   "text-xl text-center border rounded-2xl px-44 py-2 flex items-center justify-center gap-2 font-semibold cursor-pointer";
 
 const RegisterOption = () => {
-  const handleGoogle = () => {
-    console.log("this is google");
+  const { google } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  // const axiosPublic = useAxiosPublic()
+
+  const handleGoogle = async() => {
+    const toasterId = toast.loading("google loading...");
+    setLoading(true);
+
+        // await axiosPublic.post("/user/create-user", userData).then((res) => {
+
+        // })
+
+    google()
+      .then((result) => {
+        if (result) {
+
+          console.log(result)
+          toast.success("success", { id: toasterId, duration: 2000 });
+          setLoading(false);
+          setTimeout(() => {
+            navigate("/");
+          }, 2000);
+        }
+      })
+      .catch(() => {
+        toast.error("failed !", { id: toasterId, duration: 2000 });
+        setLoading(false);
+      });
   };
 
   return (
     <div
       className="relative min-h-screen w-full bg-cover bg-center flex items-center justify-center p-6"
       style={{
-        backgroundImage:
-          "url('/bg2.png')",
+        backgroundImage: "url('/bg2.png')",
       }}
     >
       {/* Overlay */}
@@ -33,28 +64,34 @@ const RegisterOption = () => {
             <MdOutlineEmail /> Continue with Email
           </Link>
 
-          <button onClick={handleGoogle} className={btnStyle}>
-            <img
-              src="https://www.svgrepo.com/show/475656/google-color.svg"
-              alt="Google"
-              className="w-5 h-5 mr-2"
-            />
-            Continue with Google
+          <button disabled onClick={handleGoogle} className={btnStyle}>
+            {loading ? (
+              <Spinner />
+            ) : (
+              <>
+                <img
+                  src="https://www.svgrepo.com/show/475656/google-color.svg"
+                  alt="Google"
+                  className="w-5 h-5 mr-2"
+                />
+                Continue with Google
+              </>
+            )}
           </button>
 
           <Link to="/register/vendor" className={btnStyle}>
             <FaFileContract /> Continue as a Vendor
           </Link>
 
-           <p className="text-gray-800 text-lg text-center pt-5">
-              Already have an account?{" "}
-              <Link
-                to="/login"
-                className="font-bold hover:underline text-[#6200ED]"
-              >
-                Login Here
-              </Link>
-            </p>
+          <p className="text-gray-800 text-lg text-center pt-5">
+            Already have an account?{" "}
+            <Link
+              to="/login"
+              className="font-bold hover:underline text-[#6200ED]"
+            >
+              Login Here
+            </Link>
+          </p>
         </div>
       </div>
     </div>

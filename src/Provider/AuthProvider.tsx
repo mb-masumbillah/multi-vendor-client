@@ -1,7 +1,9 @@
 import {
   createUserWithEmailAndPassword,
+  GoogleAuthProvider,
   onAuthStateChanged,
   signInWithEmailAndPassword,
+  signInWithPopup,
   signOut,
   type User,
 } from "firebase/auth";
@@ -14,6 +16,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const axiosPublic = useAxiosPublic();
+  const provider = new GoogleAuthProvider();
 
   const createUser = (email: string, password: string) => {
     setLoading(true); // ✅ Start loading
@@ -27,6 +30,11 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     return signInWithEmailAndPassword(auth, email, password).finally(() =>
       setLoading(false)
     ); // ✅ Stop loading
+  };
+
+  const google = () => {
+    setLoading(true);
+    return signInWithPopup(auth, provider);
   };
 
   const logout = () => {
@@ -65,6 +73,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     loading,
     createUser,
     loginUser,
+    google,
     logout,
   };
 
